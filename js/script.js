@@ -200,9 +200,6 @@ function renderizarCards(dados) {
             <div class="equip-content">
                 <h3>${eq.nome}</h3>
                 <p>${eq.descricao || 'Sem descrição cadastrada.'}</p>
-                <div class="equip-meta">
-                    <span><strong>Treinamento:</strong> ${eq.responsavel}</span>
-                </div>
                 <div class="equip-actions">
                     <button class="btn btn-secondary btn-small btn-detalhes" data-idx="${eq.nome}">Ver Detalhes</button>
                     <a href="${eq.manual}" target="_blank" class="btn btn-primary btn-small"><i class="fa-solid fa-file-pdf"></i> Manual</a>
