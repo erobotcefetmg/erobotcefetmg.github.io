@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estoque de Filamentos | E-Robot</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .estoque-container { max-width: 1000px; margin: 120px auto 100px auto; padding: 20px; }
+        .table-card { background: white; border-radius: 12px; box-shadow: var(--box-shadow); overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 15px 20px; border-bottom: 1px solid #eee; }
+        th { background: var(--primary-color); color: white; font-weight: 500; }
+        
+        .qty-control { display: flex; align-items: center; gap: 10px; }
+        .btn-qty { 
+            width: 32px; height: 32px; border-radius: 6px; border: 1px solid #ddd;
+            background: white; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        .btn-qty:hover { background: var(--accent-color); color: white; border-color: var(--accent-color); }
+        .btn-qty:disabled { opacity: 0.3; cursor: not-allowed; background: #eee; }
+        .qty-value { font-weight: bold; min-width: 50px; text-align: center; font-size: 1.1rem; }
+        
+        .status-pill { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
+        .status-ok { background: #dcfce7; color: #166534; }
+        .status-low { background: #fef9c3; color: #854d0e; border: 1px solid #facc15; }
+        .status-empty { background: #fee2e2; color: #991b1b; }
+
+        .action-bar { 
+            position: fixed; bottom: 0; left: 0; width: 100%; background: var(--primary-color); 
+            padding: 15px; text-align: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.2); z-index: 1000;
+            display: none; /* Escondida por padrão */
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+    <div>
+        <header class="navbar">
+            <div class="nav-container">
+                <div class="logo-area">
+                    <div class="logo-placeholder">E-R</div>
+                    <span class="brand-name">E-Robot <small>Controle de Insumos</small></span>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <button id="btn-modo-editor" class="btn btn-accent btn-small" onclick="ativarModoEditor()"><i class="fa-solid fa-lock"></i> Modo Editor</button>
+                    <a href="index.html" class="btn btn-secondary btn-small"><i class="fa-solid fa-house"></i> Voltar</a>
+                </div>
+            </div>
+        </header>
+
+        <main class="estoque-container">
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px;">
+                <div>
+                    <h2>Estoque de Filamentos</h2>
+                    <p>Visualização pública do inventário do laboratório.</p>
+                </div>
+                <button id="btn-novo-item" class="btn btn-accent" onclick="adicionarNovoItem()" style="display: none;"><i class="fa-solid fa-plus"></i> Novo Item</button>
+            </div>
+
+            <div class="table-card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Material / Cor</th>
+                            <th>Status</th>
+                            <th>Marca</th>
+                            <th>Quantidade Atual</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela-estoque">
+                        <tr>
+                            <td colspan="4" style="text-align: center; padding: 30px; color: var(--text-muted);">
+                                <i class="fa-solid fa-spinner fa-spin"></i> Buscando dados atualizados do almoxarifado...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+
+        <div class="action-bar" id="barra-salvar">
+            <button id="btn-salvar-estoque" class="btn btn-primary"><i class="fa-solid fa-cloud-arrow-up"></i> Sincronizar Alterações na Nuvem</button>
+        </div>
+    </div>
+
+    <script>
+        const CONFIG = {
+            senhaPainel: "erobot2026",
+            githubUser: "erobotcefetmg",
+            githubRepo: "erobotcefetmg.github.io",
+            filePath: "data/estoque.json",
+            token: "" 
+        };
+
+        let estoqueData = [];
+        let arquivoSha = "";
+        let modoEditorAtivo = false;
+
+        // Ao carregar a página, busca os dados PUBLICAMENTE (sem precisar de Token)
+        window.addEventListener("DOMContentLoaded", () => {
+            carregarEstoquePublico();
+        });
+
+        async function carregarEstoquePublico() {
+            // Usamos a URL do Raw-GitHub ou da API pública para leitura sem autenticação
+            const url = `https://api.github.com/repos/${CONFIG.githubUser}/${CONFIG.githubRepo}/contents/${CONFIG.filePath}`;
+            try {
+                const response = await fetch(url);
+                const meta = await response.json();
+                arquivoSha = meta.sha; // Guarda o SHA inicial
+                const conteudo = decodeURIComponent(escape(atob(meta.content)));
+                estoqueData = JSON.parse(conteudo);
+                renderizarTabela();
+            } catch (e) { 
+                document.getElementById("tabela-estoque").innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">Erro ao ler o arquivo de estoque no GitHub.</td></tr>`;
+            }
+        }
+
+        function renderizarTabela() {
+            const tbody = document.getElementById("tabela-estoque");
+            tbody.innerHTML = "";
+
+            estoqueData.forEach((item, index) => {
+                const isLow = item.quantidade <= item.minimo;
+                const isEmpty = item.quantidade <= 0;
+                
+                let statusHTML = `<span class="status-pill status-ok">OK</span>`;
+                if(isLow) statusHTML = `<span class="status-pill status-low">Baixo</span>`;
+                if(isEmpty) statusHTML = `<span class="status-pill status-empty">Esgotado</span>`;
+
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>
+                        <strong>${item.material}</strong><br>
+                        <small>${item.cor}</small>
+                    </td>
+                    <td>${statusHTML}</td>
+                    <td>${item.marca}</td>
+                    <td>
+                        <div class="qty-control">
+                            <button class="btn-qty" onclick="alterarQtd(${index}, -0.1)" ${!modoEditorAtivo ? 'disabled' : ''}><i class="fa-solid fa-minus"></i></button>
+                            <span class="qty-value">${item.quantidade.toFixed(1)} ${item.unidade}</span>
+                            <button class="btn-qty" onclick="alterarQtd(${index}, 0.1)" ${!modoEditorAtivo ? 'disabled' : ''}><i class="fa-solid fa-plus"></i></button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // FUNÇÃO QUE DESTRAVA O MODO EDITOR APENAS COM AUTENTICAÇÃO
+        function activarModoEditor() {
+            const login = prompt("Digite a senha do laboratório:");
+            if (login === CONFIG.senhaPainel) {
+                const token = prompt("Cole o seu GitHub Personal Access Token (ghp_...):");
+                if (token) {
+                    CONFIG.token = token.trim();
+                    modoEditorAtivo = true;
+                    
+                    // Atualiza a interface revelando os controles de escrita
+                    document.getElementById("btn-modo-editor").className = "btn btn-primary btn-small";
+                    document.getElementById("btn-modo-editor").innerHTML = `<i class="fa-solid fa-lock-open"></i> Editor Ativo`;
+                    document.getElementById("btn-modo-editor").onclick = null; // desabilita clicar de novo
+                    document.getElementById("btn-novo-item").style.display = "block";
+                    document.getElementById("barra-salvar").style.display = "block";
+                    
+                    renderizarTabela(); // Recarrega destravando os botões de + e -
+                } else { alert("Token inválido."); }
+            } else { alert("Senha incorreta."); }
+        }
+
+        function alterarQtd(index, valor) {
+            if(!modoEditorAtivo) return;
+            estoqueData[index].quantidade += valor;
+            if(estoqueData[index].quantidade < 0) estoqueData[index].quantidade = 0;
+            renderizarTabela();
+        }
+
+        function adicionarNovoItem() {
+            if(!modoEditorAtivo) return;
+            const material = prompt("Tipo (PLA, ABS, PETG...):");
+            const cor = prompt("Cor:");
+            const marca = prompt("Marca:");
+            if(material && cor) {
+                estoqueData.push({
+                    id: Date.now(),
+                    material, cor, marca,
+                    quantidade: 1.0, unidade: "kg", minimo: 0.5
+                });
+                renderizarTabela();
+            }
+        }
+
+        // SALVAMENTO NA NUVEM (Exige o Token configurado no modo editor)
+        document.getElementById("btn-salvar-estoque").addEventListener("click", async () => {
+            if(!modoEditorAtivo || !CONFIG.token) return;
+
+            const btn = document.getElementById("btn-salvar-estoque");
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Atualizando GitHub...`;
+
+            const url = `https://api.github.com/repos/${CONFIG.githubUser}/${CONFIG.githubRepo}/contents/${CONFIG.filePath}`;
+            const novoConteudoBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(estoqueData, null, 2))));
+
+            try {
+                const response = await fetch(url, {
+                    method: "PUT",
+                    headers: { "Authorization": `token ${CONFIG.token}`, "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        message: "Movimentação de estoque via painel web",
+                        content: novoConteudoBase64,
+                        sha: arquivoSha
+                    })
+                });
+
+                if (response.ok) {
+                    const res = await response.json();
+                    arquivoSha = res.content.sha; // atualiza o SHA para as próximas batidas
+                    alert("Estoque sincronizado na nuvem com sucesso!");
+                } else { alert("Erro ao salvar dados. Verifique suas permissões."); }
+            } catch (e) { alert("Erro de conexão com o GitHub."); }
+            finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Sincronizar Estoque na Nuvem`;
+            }
+        });
+    </script>
+</body>
+</html>

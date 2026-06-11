@@ -96,30 +96,36 @@
     </div>
 
     <script>
-        // ==========================================================
-        // CONFIGURAÇÃO DOS DADOS DO REPOSITÓRIO (PREENCHA AQUI)
-        // ==========================================================
         const CONFIG = {
-            senhaPainel: "erobot2026",                 // Senha para abrir a página admin
-            githubUser: "erobotcefetmg",              // Seu usuário ou organização do GitHub
-            githubRepo: "erobotcefetmg.github.io",     // Nome exato do seu repositório atual
-            filePath: "data/equipamentos.json",       // Caminho do arquivo dentro do repositório
-            token: "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"      // Cole aqui o Token gerado (começa com ghp_...)
+            senhaPainel: "erobot2026",                 
+            githubUser: "erobotcefetmg",              
+            githubRepo: "erobotcefetmg.github.io",     
+            filePath: "data/equipamentos.json",       
+            token: "" // DEIXE VAZIO AQUI POR SEGURANÇA!
         };
 
         let dadosLocais = [];
         let indexSendoEditado = null;
-        let arquivoSha = ""; // Necessário para o GitHub validar a substituição do arquivo
+        let arquivoSha = ""; 
 
         const modalEdit = document.getElementById("edit-modal");
         const btnCloseModal = document.getElementById("close-edit-modal");
 
+        // 2. PEDIR O NOVO TOKEN DINAMICAMENTE AO ENTRAR
         window.addEventListener("DOMContentLoaded", () => {
             const login = prompt("Digite a senha de administrador do E-Robot:");
             if (login === CONFIG.senhaPainel) {
-                document.getElementById("admin-page").style.display = "block";
-                carregarDadosAdmin();
-                configurarFechamentoModal();
+                // O sistema pede o token na hora e guarda apenas na memória do navegador
+                const tokenInserido = prompt("Cole o seu NOVO GitHub Personal Access Token (ghp_...):");
+                if (tokenInserido) {
+                    CONFIG.token = tokenInserido.trim();
+                    document.getElementById("admin-page").style.display = "block";
+                    carregarDadosAdmin(); // Agora vai rodar com o token correto
+                    configurarFechamentoModal();
+                } else {
+                    alert("O Token é obrigatório para conectar com o GitHub.");
+                    window.location.href = "index.html";
+                }
             } else {
                 alert("Senha incorreta! Acesso negado.");
                 window.location.href = "index.html";
@@ -158,7 +164,7 @@
                     <img src="${eq.foto}" alt="${eq.nome}" onerror="this.src='https://via.placeholder.com/60x60'">
                     <div class="admin-info">
                         <h4 style="margin:0 0 4px 0; color:var(--primary-color); font-size:1.1rem;">${eq.nome}</h4>
-                        <small style="color:var(--text-muted)">Responsável: <strong>${eq.responsavel}</strong> | Categoria: ${eq.categoria}</small>
+                        <small style="color:var(--text-muted)">Categoria: ${eq.categoria}</small>
                     </div>
                     <div class="admin-controls">
                         <select class="admin-select select-status" data-idx="${index}">
@@ -262,16 +268,20 @@
                     body: JSON.stringify(payload)
                 });
 
+                const respostaJson = await response.json();
+
                 if (response.ok) {
-                    const respostaJson = await response.json();
-                    arquivoSha = respuestaJson.content.sha; // Atualiza o ID do novo estado do arquivo
+                    // Atualiza o ID do SHA local com o novo ID gerado pelo GitHub para a próxima edição
+                    if (respostaJson.content && respostaJson.content.sha) {
+                        arquivoSha = respostaJson.content.sha;
+                    }
                     alert("Sucesso absoluto! O arquivo foi salvo diretamente no GitHub.\n\nO site principal atualizará automaticamente em instantes.");
                 } else {
-                    const erroData = await response.json();
-                    alert(`Falha ao salvar: ${erroData.message || response.statusText}`);
+                    alert(`Falha ao salvar: ${respostaJson.message || response.statusText}`);
                 }
             } catch (err) {
-                alert("Erro de rede ao tentar salvar os dados no GitHub.");
+                // Só entra aqui se a internet cair ou o GitHub estiver totalmente fora do ar
+                alert("Erro de rede ao tentar processar os dados.");
                 console.error(err);
             } finally {
                 btn.disabled = false;

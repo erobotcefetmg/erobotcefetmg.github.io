@@ -245,7 +245,7 @@ function renderizarTabelaManuais(dados) {
 
             <td>
                 <a href="${eq.manual}" target="_blank" style="color:var(--accent-color); font-weight:600; text-decoration:none;">
-                    <i class="fa-solid fa-file-pdf"></i> Download Manual PDF
+                    <i class="fa-solid fa-file-pdf"></i> Download Manual
                 </a>
             </td>
         `;
