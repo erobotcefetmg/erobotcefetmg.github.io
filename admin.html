@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Master Admin | E-Robot CEFET-MG</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .admin-container { max-width: 900px; margin: 120px auto 80px auto; padding: 20px; }
+        .admin-card-row { 
+            background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px;
+            box-shadow: var(--box-shadow); display: flex; flex-wrap: wrap; gap: 15px; align-items: center;
+            transition: var(--transition-smooth); border-left: 4px solid var(--accent-color);
+        }
+        .admin-card-row:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.1); }
+        .admin-card-row img { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; }
+        .admin-info { flex: 1; min-width: 200px; }
+        .admin-controls { display: flex; gap: 15px; align-items: center; }
+        .admin-select { padding: 8px 12px; border-radius: 4px; border: 1px solid #ddd; background: white; font-weight: 600; cursor: pointer; }
+        
+        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 15px; }
+        .form-group label { font-weight: 600; font-size: 0.9rem; color: var(--primary-color); }
+        .form-control { padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.95rem; width: 100%; font-family: inherit; }
+        
+        .action-bar { 
+            position: fixed; bottom: 0; left: 0; width: 100%; background: var(--primary-color); 
+            padding: 15px; text-align: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.2); z-index: 999;
+        }
+        .protected-content { display: none; }
+    </style>
+</head>
+<body class="bg-light">
+
+    <div id="admin-page" class="protected-content">
+        <header class="navbar">
+            <div class="nav-container">
+                <div class="logo-area">
+                    <div class="logo-placeholder">E-R</div>
+                    <span class="brand-name">E-Robot <small>Painel Nuvem Sincronizado</small></span>
+                </div>
+                <a href="index.html" class="btn btn-secondary btn-small"><i class="fa-solid fa-arrow-left"></i> Voltar ao Site</a>
+            </div>
+        </header>
+
+        <main class="admin-container">
+            <div style="margin-bottom: 30px;">
+                <h2>Gerenciamento Direto via Nuvem</h2>
+                <p>Modifique os status, vídeos e regras. Ao clicar em salvar na barra inferior, as alterações vão direto para o GitHub e atualizam o site.</p>
+            </div>
+
+            <div id="admin-lista-equipamentos">
+                </div>
+        </main>
+
+        <div class="action-bar">
+            <button id="btn-salvar-nuvem" class="btn btn-primary"><i class="fa-solid fa-cloud-arrow-up"></i> Salvar Alterações no GitHub</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="edit-modal">
+        <div class="modal-card" style="max-height: 85vh;">
+            <button class="modal-close" id="close-edit-modal">&times;</button>
+            <div class="modal-body" style="grid-template-columns: 1fr;">
+                <div class="modal-info" style="padding: 25px; overflow-y: auto;">
+                    <h3 style="color: var(--primary-color); margin-bottom: 20px;"><i class="fa-solid fa-pen-to-square"></i> Editar Equipamento</h3>
+                    
+                    <input type="hidden" id="edit-index">
+
+                    <div class="form-group">
+                        <label>Nome do Equipamento:</label>
+                        <input type="text" id="edit-nome" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Descrição Curta:</label>
+                        <textarea id="edit-descricao" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>URL do Vídeo (YouTube):</label>
+                        <input type="text" id="edit-video" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Regras de Utilização (Uma por linha):</label>
+                        <textarea id="edit-regras" class="form-control" rows="5"></textarea>
+                    </div>
+
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button id="btn-confirmar-modal" class="btn btn-secondary" style="flex: 1; justify-content: center;"><i class="fa-solid fa-check"></i> OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================================
+        // CONFIGURAÇÃO DOS DADOS DO REPOSITÓRIO (PREENCHA AQUI)
+        // ==========================================================
+        const CONFIG = {
+            senhaPainel: "erobot2026",                 // Senha para abrir a página admin
+            githubUser: "erobotcefetmg",              // Seu usuário ou organização do GitHub
+            githubRepo: "erobotcefetmg.github.io",     // Nome exato do seu repositório atual
+            filePath: "data/equipamentos.json",       // Caminho do arquivo dentro do repositório
+            token: "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"      // Cole aqui o Token gerado (começa com ghp_...)
+        };
+
+        let dadosLocais = [];
+        let indexSendoEditado = null;
+        let arquivoSha = ""; // Necessário para o GitHub validar a substituição do arquivo
+
+        const modalEdit = document.getElementById("edit-modal");
+        const btnCloseModal = document.getElementById("close-edit-modal");
+
+        window.addEventListener("DOMContentLoaded", () => {
+            const login = prompt("Digite a senha de administrador do E-Robot:");
+            if (login === CONFIG.senhaPainel) {
+                document.getElementById("admin-page").style.display = "block";
+                carregarDadosAdmin();
+                configurarFechamentoModal();
+            } else {
+                alert("Senha incorreta! Acesso negado.");
+                window.location.href = "index.html";
+            }
+        });
+
+        // Carrega dados direto do repositório buscando o metadado SHA necessário para gravação
+        async function carregarDadosAdmin() {
+            const url = `https://api.github.com/repos/${CONFIG.githubUser}/${CONFIG.githubRepo}/contents/${CONFIG.filePath}`;
+            try {
+                // Adiciona cabeçalho de autenticação se houver token configurado
+                const headers = CONFIG.token ? { "Authorization": `token ${CONFIG.token}` } : {};
+                const response = await fetch(url, { headers });
+                const jsonMetaData = await response.json();
+                
+                // O conteúdo vem em Base64 da API do GitHub, precisamos decodificar
+                arquivoSha = jsonMetaData.sha; 
+                const conteudoDecodificado = decodeURIComponent(escape(atob(jsonMetaData.content)));
+                dadosLocais = JSON.parse(conteudoDecodificado);
+                
+                renderizarListaAdmin();
+            } catch (e) {
+                alert("Erro ao conectar com a API do GitHub. Verifique os dados de configuração no código.");
+                console.error(e);
+            }
+        }
+
+        function renderizarListaAdmin() {
+            const listaContainer = document.getElementById("admin-lista-equipamentos");
+            listaContainer.innerHTML = "";
+
+            dadosLocais.forEach((eq, index) => {
+                const row = document.createElement("div");
+                row.className = "admin-card-row";
+                row.innerHTML = `
+                    <img src="${eq.foto}" alt="${eq.nome}" onerror="this.src='https://via.placeholder.com/60x60'">
+                    <div class="admin-info">
+                        <h4 style="margin:0 0 4px 0; color:var(--primary-color); font-size:1.1rem;">${eq.nome}</h4>
+                        <small style="color:var(--text-muted)">Responsável: <strong>${eq.responsavel}</strong> | Categoria: ${eq.categoria}</small>
+                    </div>
+                    <div class="admin-controls">
+                        <select class="admin-select select-status" data-idx="${index}">
+                            <option value="Disponível" ${eq.status === 'Disponível' ? 'selected' : ''}>🟢 Disponível</option>
+                            <option value="Restrito" ${eq.status === 'Restrito' ? 'selected' : ''}>🟡 Restrito</option>
+                            <option value="Em manutenção" ${eq.status === 'Em manutenção' ? 'selected' : ''}>🔴 Em manutenção</option>
+                        </select>
+                        <button class="btn btn-secondary btn-small btn-abrir-editor" data-idx="${index}">
+                            <i class="fa-solid fa-pen-to-square"></i> Editar Conteúdo
+                        </button>
+                    </div>
+                `;
+                listaContainer.appendChild(row);
+            });
+
+            document.querySelectorAll('.select-status').forEach(select => {
+                select.addEventListener('change', (e) => {
+                    const idx = e.target.getAttribute('data-idx');
+                    dadosLocais[idx].status = e.target.value;
+                });
+            });
+
+            document.querySelectorAll('.btn-abrir-editor').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const idx = e.currentTarget.getAttribute('data-idx');
+                    abrirEditorEquipamento(idx);
+                });
+            });
+        }
+
+        function abrirEditorEquipamento(index) {
+            indexSendoEditado = index;
+            const eq = dadosLocais[index];
+
+            document.getElementById("edit-nome").value = eq.nome || "";
+            document.getElementById("edit-descricao").value = eq.descricao || "";
+            document.getElementById("edit-video").value = eq.video || "";
+            
+            if (eq.regras && Array.isArray(eq.regras)) {
+                document.getElementById("edit-regras").value = eq.regras.join("\n");
+            } else {
+                document.getElementById("edit-regras").value = "";
+            }
+
+            modalEdit.classList.add("active");
+            document.body.style.overflow = "hidden";
+        }
+
+        document.getElementById("btn-confirmar-modal").addEventListener("click", () => {
+            if (indexSendoEditado !== null) {
+                dadosLocais[indexSendoEditado].nome = document.getElementById("edit-nome").value;
+                dadosLocais[indexSendoEditado].descricao = document.getElementById("edit-descricao").value;
+                dadosLocais[indexSendoEditado].video = document.getElementById("edit-video").value;
+
+                const textoRegras = document.getElementById("edit-regras").value;
+                dadosLocais[indexSendoEditado].regras = textoRegras.split("\n").filter(linha => linha.trim() !== "");
+
+                fecharModal();
+                renderizarListaAdmin();
+            }
+        });
+
+        function configurarFechamentoModal() {
+            btnCloseModal.addEventListener('click', fecharModal);
+            modalEdit.addEventListener('click', (e) => {
+                if(e.target === modalEdit) fecharModal();
+            });
+        }
+
+        function fecharModal() {
+            modalEdit.classList.remove("active");
+            document.body.style.overflow = "";
+            indexSendoEditado = null;
+        }
+
+        // ENVIAR ARQUIVO ATUALIZADO DIRETO PARA A API DO GITHUB
+        document.getElementById("btn-salvar-nuvem").addEventListener("click", async () => {
+            const btn = document.getElementById("btn-salvar-nuvem");
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Conectando ao GitHub...`;
+
+            const url = `https://api.github.com/repos/${CONFIG.githubUser}/${CONFIG.githubRepo}/contents/${CONFIG.filePath}`;
+            
+            // Converte o JSON atualizado para string estruturada e depois para Base64 (padrão exigido pelo GitHub)
+            const novoConteudoTexto = JSON.stringify(dadosLocais, null, 2);
+            const novoConteudoBase64 = btoa(unescape(encodeURIComponent(novoConteudoTexto)));
+
+            const payload = {
+                message: "Atualização de equipamentos via Painel Administrativo",
+                content: novoConteudoBase64,
+                sha: arquivoSha // Valida que estamos editando em cima da versão correta
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": `token ${CONFIG.token}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    const respostaJson = await response.json();
+                    arquivoSha = respuestaJson.content.sha; // Atualiza o ID do novo estado do arquivo
+                    alert("Sucesso absoluto! O arquivo foi salvo diretamente no GitHub.\n\nO site principal atualizará automaticamente em instantes.");
+                } else {
+                    const erroData = await response.json();
+                    alert(`Falha ao salvar: ${erroData.message || response.statusText}`);
+                }
+            } catch (err) {
+                alert("Erro de rede ao tentar salvar os dados no GitHub.");
+                console.error(err);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Salvar Alterações no GitHub`;
+            }
+        });
+    </script>
+</body>
+</html>

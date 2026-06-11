@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Robot - CEFET-MG | Laboratório Maker</title>
+    <title>eRobot - CEFET-MG</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -13,7 +13,7 @@
         <div class="nav-container">
             <div class="logo-area">
                 <div class="logo-placeholder">E-R</div>
-                <span class="brand-name">E-Robot <small>CEFET-MG</small></span>
+                <span class="brand-name">eRobot <small>CEFET-MG</small></span>
             </div>
             <button class="menu-toggle" id="mobile-menu" aria-label="Abrir Menu">
                 <span class="bar"></span>
@@ -32,9 +32,9 @@
 
     <section id="inicio" class="hero-section">
         <div class="hero-content">
-            <h1>E-Robot</h1>
-            <h2>Laboratório de Robótica e Fabricação Digital</h2>
-            <p>Espaço de inovação, prototipagem e aprendizado prático inspirado na cultura Maker e FabLabs.</p>
+            <h1>eRobot</h1>
+            <h2>Projeto de Extensão - CEFET-MG</h2>
+            <p>Professor: Ramon da Cunha Lopes; Alunos: Gustavo Vinícius Souza Soares, Igor Righi Gonçalves, Julio Antunes Lopes e Luiz Otávio Portela Alves.</p>
             <a href="#equipamentos" class="btn btn-primary btn-large">Consultar Equipamentos</a>
         </div>
         
@@ -49,16 +49,6 @@
                 <h3 id="count-disponiveis">--</h3>
                 <p>Disponíveis Agora</p>
             </div>
-            <div class="counter-card">
-                <i class="fa-solid fa-diagram-project"></i>
-                <h3>32+</h3>
-                <p>Projetos Realizados</p>
-            </div>
-            <div class="counter-card">
-                <i class="fa-solid fa-users"></i>
-                <h3>150+</h3>
-                <p>Usuários Credenciados</p>
-            </div>
         </div>
     </section>
 
@@ -71,7 +61,7 @@
         <div class="search-filter-bar">
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="search-input" placeholder="Buscar por nome, responsável ou categoria...">
+                <input type="text" id="search-input" placeholder="Buscar por nome, categoria...">
             </div>
             <div class="filter-box">
                 <button class="filter-btn active" data-category="todos">Todos</button>
@@ -107,7 +97,6 @@
                     <thead>
                         <tr>
                             <th>Equipamento</th>
-                            <th>Responsável</th>
                             <th>Status Atual</th>
                             <th>Ação</th>
                         </tr>
@@ -135,7 +124,7 @@
                 <thead>
                     <tr>
                         <th>Equipamento</th>
-                        <th>Categoria</th>
+                        
                         <th>Documento Técnico</th>
                     </tr>
                 </thead>
@@ -192,23 +181,16 @@
                     
                     <p class="modal-desc" id="modal-description">Descrição longa aqui...</p>
                     
-                    <div class="modal-meta">
-                        <p><strong><i class="fa-solid fa-user"></i> Responsável pelo Treinamento:</strong> <span id="modal-responsible">Nome</span></p>
-                    </div>
-
-                    <div class="modal-rules">
-                        <h4><i class="fa-solid fa-triangle-exclamation"></i> Regras Principais de Uso:</h4>
-                        <ul>
-                            <li><i class="fa-solid fa-check text-success"></i> Utilizar apenas o computador dedicado ao equipamento.</li>
-                            <li><i class="fa-solid fa-check text-success"></i> Salvar todos os arquivos na pasta identificada do seu projeto.</li>
-                            <li><i class="fa-solid fa-check text-success"></i> Registrar o consumo de filamentos/insumos no formulário ao lado da máquina.</li>
-                            <li><i class="fa-solid fa-check text-success"></i> Comunicar imediatamente qualquer falha, quebra ou comportamento anômalo.</li>
-                        </ul>
+                    <div class="modal-rules" id="modal-rules-container">
+                        <h4><i class="fa-solid fa-triangle-exclamation"></i> Diretrizes de Uso:</h4>
+                        <ul id="modal-rules-list">
+                            </ul>
                     </div>
 
                     <div class="modal-actions">
-                        <a id="modal-btn-manual" href="#" target="_blank" class="btn btn-primary"><i class="fa-solid fa-file-pdf"></i> Abrir Manual PDF</a>
-                        <a id="modal-btn-agenda" href="#" target="_blank" class="btn btn-accent"><i class="fa-solid fa-calendar-days"></i> Abrir Agenda</a>
+                        <a id="modal-btn-manual" href="#" target="_blank" class="btn btn-primary"><i class="fa-solid fa-file-pdf"></i> Manual PDF</a>
+                        <a id="modal-btn-video" href="#" target="_blank" class="btn btn-video" style="background-color: #CC0000; color: white;"><i class="fa-brands fa-youtube"></i> Treinamento</a>
+                        <a id="modal-btn-agenda" href="#" target="_blank" class="btn btn-accent"><i class="fa-solid fa-calendar-days"></i> Agenda</a>
                     </div>
                 </div>
             </div>

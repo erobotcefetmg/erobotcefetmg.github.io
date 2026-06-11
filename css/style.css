@@ -1,17 +1,16 @@
-/* Definições de Variáveis de Cor e Reset Globais */
+
 :root {
-    --primary-color: #0B192C;     /* Azul Escuro Tecnológico */
-    --secondary-color: #1E3E62;   /* Azul Intermediário */
-    --accent-color: #008DDA;      /* Azul Claro/Destaque */
-    --bg-light: #F4F6F9;          /* Fundo Claro Seções alternadas */
+    --primary-color: #0B192C;    
+    --secondary-color: #1E3E62;  
+    --accent-color: #008DDA;      
+    --bg-light: #F4F6F9;     
     --bg-white: #FFFFFF;
     --text-main: #333333;
     --text-muted: #666666;
     
-    /* Cores de Status */
-    --status-disponivel: #2ECC71; /* Verde */
-    --status-restrito: #F1C40F;   /* Amarelo/Atenção */
-    --status-manutencao: #E74C3C; /* Vermelho */
+    --status-disponivel: #2ECC71; 
+    --status-restrito: #F1C40F;   
+    --status-manutencao: #E74C3C; 
     
     --transition-smooth: all 0.3s ease;
     --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
@@ -34,11 +33,9 @@ body {
     background-color: var(--bg-white);
 }
 
-/* Utilitários */
 .bg-light { background-color: var(--bg-light); }
 .text-success { color: var(--status-disponivel); }
 
-/* Botões */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -59,7 +56,6 @@ body {
 .btn-accent:hover { background-color: #D35400; }
 .btn-small { padding: 6px 12px; font-size: 0.85rem; }
 
-/* CABEÇALHO FIXO */
 .navbar {
     position: fixed;
     top: 0;
@@ -133,7 +129,6 @@ body {
     transition: var(--transition-smooth);
 }
 
-/* HERO / INÍCIO */
 .hero-section {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     color: white;
@@ -156,7 +151,6 @@ body {
     color: #BDC3C7;
 }
 
-/* Indicadores */
 .dashboard-counters {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -186,7 +180,6 @@ body {
     margin-bottom: 5px;
 }
 
-/* SEÇÕES GENÉRICAS */
 .section-container {
     padding: 80px 20px;
     max-width: 1200px;
@@ -220,7 +213,6 @@ body {
     margin-bottom: 40px;
 }
 
-/* BUSCA E FILTROS */
 .search-filter-bar {
     display: flex;
     flex-direction: column;
@@ -265,7 +257,6 @@ body {
     border-color: var(--secondary-color);
 }
 
-/* CARDS DE EQUIPAMENTOS */
 .equipamentos-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -339,7 +330,6 @@ body {
 }
 .equip-actions .btn { flex: 1; text-align: center; justify-content: center;}
 
-/* TABELAS */
 .agendamentos-layout {
     background: white;
     padding: 30px;
@@ -404,7 +394,6 @@ body {
     background: white;
 }
 
-/* SEÇÃO DOCUMENTOS */
 .docs-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -427,11 +416,13 @@ body {
 .doc-card h3 { margin-bottom: 10px; font-size: 1.2rem; color: var(--primary-color); }
 .doc-card p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px; }
 
-/* MODAL */
 .modal-overlay {
     position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.6);
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
@@ -440,14 +431,17 @@ body {
     opacity: 0;
     pointer-events: none;
     transition: var(--transition-smooth);
+    padding: 15px;
+    overflow-y: auto;
 }
+
 .modal-overlay.active {
     opacity: 1;
     pointer-events: auto;
 }
 .modal-card {
     background: white;
-    width: 90%;
+    width: 100%;
     max-width: 800px;
     border-radius: 12px;
     overflow: hidden;
@@ -455,26 +449,121 @@ body {
     transform: scale(0.8);
     transition: var(--transition-smooth);
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    margin: auto;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
 }
+
 .modal-overlay.active .modal-card {
     transform: scale(1);
 }
 .modal-close {
     position: absolute;
-    top: 15px; right: 20px;
-    font-size: 2rem;
-    background: none; border: none;
-    cursor: pointer; color: #FFF;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    top: 12px; 
+    right: 15px;
+    font-size: 2.2rem;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer; 
+    color: #FFF;
     z-index: 10;
+    transition: var(--transition-smooth);
 }
+.modal-close:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
 .modal-body {
     display: grid;
     grid-template-columns: 1fr;
+    overflow-y: auto;
+}
+
+@media (min-width: 768px) {
+    .modal-body { 
+        grid-template-columns: 1fr 1.2fr; 
+        overflow-y: visible;
+    }
+    .modal-card {
+        max-height: 85vh;
+    }
+}
+
+.modal-img-container {
+    height: 200px;
+    background: #DDD;
 }
 @media (min-width: 768px) {
-    .modal-body { grid-template-columns: 1fr 1.2fr; }
+    .modal-img-container {
+        height: 100%;
+        min-height: 350px;
+    }
 }
+.modal-img-container img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+}
+
+.modal-info { 
+    padding: 20px; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 12px; 
+}
+@media (min-width: 768px) {
+    .modal-info {
+        padding: 30px;
+        gap: 15px;
+    }
+}
+
+.modal-desc { 
+    color: var(--text-muted); 
+    font-size: 0.9rem; 
+}
+
+.modal-rules { 
+    background: var(--bg-light); 
+    padding: 12px; 
+    border-radius: 8px; 
+}
+.modal-rules h4 { 
+    margin-bottom: 6px; 
+    font-size: 0.9rem; 
+}
+.modal-rules ul { 
+    list-style: none; 
+    font-size: 0.8rem; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 6px;
+}
+
+.modal-actions { 
+    display: flex; 
+    flex-direction: column;
+    gap: 10px; 
+    margin-top: 10px; 
+}
+@media (min-width: 480px) {
+    .modal-actions {
+        flex-direction: row;
+    }
+}
+.modal-actions .btn { 
+    flex: 1; 
+    justify-content: center; 
+    padding: 12px;
+}
+
 .modal-img-container {
     height: 100%;
     min-height: 250px;
@@ -489,7 +578,6 @@ body {
 .modal-actions { display: flex; gap: 15px; margin-top: 10px; }
 .modal-actions .btn { flex: 1; justify-content: center; }
 
-/* FOOTER */
 footer {
     background-color: var(--primary-color);
     color: #888;
@@ -499,7 +587,6 @@ footer {
     border-top: 1px solid rgba(255,255,255,0.05);
 }
 
-/* RESPONSIVIDADE (MOBILE FIRST / ADAPTAÇÕES) */
 @media (max-width: 768px) {
     .nav-menu {
         position: fixed;
@@ -513,8 +600,7 @@ footer {
     }
     .nav-menu.active { left: 0; }
     .menu-toggle { display: flex; }
-    
-    /* Animação Hamburger */
+
     .menu-toggle.active .bar:nth-child(2) { opacity: 0; }
     .menu-toggle.active .bar:nth-child(1) { transform: translateY(11px) rotate(45deg); }
     .menu-toggle.active .bar:nth-child(3) { transform: translateY(-11px) rotate(-45deg); }

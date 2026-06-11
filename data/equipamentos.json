@@ -1,132 +1,210 @@
 [
-    {
-      "nome": "PCB Router - Fresadora de PCI",
-      "foto": "https://images.unsplash.com/photo-1608962714006-2510936ebd01?auto=format&fit=crop&w=500&q=80",
-      "manual": "https://drive.google.com",
-      "agenda": "https://docs.google.com/spreadsheets",
-      "responsavel": "Prof. Carlos",
-      "status": "Disponível",
-      "categoria": "Fabricação",
-      "descricao": "Fresadora de alta precisão para isolamento de trilhas em placas de circuito impresso protótipos."
-    },
-    {
-      "nome": "Router CNC 1",
-      "foto": "https://images.unsplash.com/photo-1615840287214-7fe58a8f3685?auto=format&fit=crop&w=500&q=80",
-      "manual": "https://drive.google.com",
-      "agenda": "https://docs.google.com/spreadsheets",
-      "responsavel": "Marcos Silva",
-      "status": "Disponível",
-      "categoria": "Fabricação",
-      "descricao": "Corte e usinagem de chapas de madeira, acrílico e metais moles de grande porte."
-    },
-    {
-      "nome": "Router CNC 2",
-      "foto": "https://images.unsplash.com/photo-1615840287214-7fe58a8f3685?auto=format&fit=crop&w=500&q=80",
-      "manual": "https://drive.google.com",
-      "agenda": "https://docs.google.com/spreadsheets",
-      "responsavel": "Marcos Silva",
-      "status": "Em manutenção",
-      "categoria": "Fabricação",
-      "descricao": "Equipamento secundário de usinagem cnc para projetos acadêmicos rápidos."
-    },
-    {
-      "nome": "Câmera 360",
-      "foto": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=500&q=80",
-      "manual": "https://drive.google.com",
-      "agenda": "https://docs.google.com/spreadsheets",
-      "responsavel": "Letícia",
-      "status": "Disponível",
-      "categoria": "Visual/Audiovisual",
-      "descricao": "Câmera de captura imersiva para mapeamento de ambientes virtuais e realidade aumentada."
-    },
-    {
-      "nome": "Micro Retífica",
-      "foto": "https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=500&q=80",
-      "manual": "https://drive.google.com",
-      "agenda": "https://docs.google.com/spreadsheets",
-      "responsavel": "Kiara",
-      "status": "Disponível",
-      "categoria": "Ferramentas",
-      "descricao": "Ferramenta rotativa multifunção para acabamento de peças plásticas, cortes finos e polimentos."
-    },
-    {
-      "nome": "Plotter de Recorte",
-      "foto": "https://images.unsplash.com/photo-1619120238346-978e07731e77?auto=format&fit=crop&w=500&q=80",
-      "manual": "https://drive.google.com",
-      "agenda": "https://docs.google.com/spreadsheets",
-      "responsavel": "Fernanda",
-      "status": "Disponível",
-      "categoria": "Fabricação",
-      "descricao": "Corte preciso de vinil adesivo, máscaras de solda e papéis de alta gramatura."
-    },
-    {
-      "nome": "CNC H3N",
-      "foto": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=500&q=80",
-      "manual": "https://drive.google.com",
-      "agenda": "https://docs.google.com/spreadsheets",
-      "responsavel": "Prof. Carlos",
-      "status": "Restrito",
-      "categoria": "Fabricação",
-      "descricao": "Usinagem industrial de precisão avançada. Exige treinamento presencial nível III."
-    },
-    {
-      "nome": "Scanner 3D",
-      "foto": "https://images.unsplash.com/photo-1535378917042-10a22c95931a?auto=format&fit=crop&w=500&q=80",
-      "manual": "https://drive.google.com",
-      "agenda": "https://docs.google.com/spreadsheets",
-      "responsavel": "Letícia",
-      "status": "Disponível",
-      "categoria": "Visual/Audiovisual",
-      "descricao": "Digitalização tridimensional de objetos reais para posterior engenharia reversa."
-    },
-    {
-      "nome": "Termoformadora (Vacuum Forming)",
-      "foto": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=500&q=80",
-      "manual": "https://drive.google.com",
-      "agenda": "https://docs.google.com/spreadsheets",
-      "responsavel": "Kiara",
-      "status": "Disponível",
-      "categoria": "Fabricação",
-      "descricao": "Moldagem de chapas plásticas aquecidas por sucção a vácuo sobre moldes rígidos."
-    },
-    {
-      "nome": "Impressora 3D Bambu Lab A1",
-      "foto": "https://images.unsplash.com/photo-1615840287214-7fe58a8f3685?auto=format&fit=crop&w=500&q=80",
-      "manual": "https://drive.google.com",
-      "agenda": "https://docs.google.com/spreadsheets",
-      "responsavel": "Kiara",
-      "status": "Disponível",
-      "categoria": "Fabricação",
-      "descricao": "Impressora FDM de altíssima velocidade e sistema multimateriais (AMS lite)."
-    },
-    {
-      "nome": "Osciloscópio Digital",
-      "foto": "https://images.unsplash.com/photo-1601524909162-be87252be298?auto=format&fit=crop&w=500&q=80",
-      "manual": "https://drive.google.com",
-      "agenda": "https://docs.google.com/spreadsheets",
-      "responsavel": "Gabriel",
-      "status": "Disponível",
-      "categoria": "Eletrônica",
-      "descricao": "Análise de sinais de ondas de frequência, diagnóstico e debug de circuitos lógicos."
-    },
-    {
-      "nome": "Multímetro de Bancada",
-      "foto": "https://images.unsplash.com/photo-1517420162339-f99ff93dfdf9?auto=format&fit=crop&w=500&q=80",
-      "manual": "https://drive.google.com",
-      "agenda": "https://docs.google.com/spreadsheets",
-      "responsavel": "Gabriel",
-      "status": "Disponível",
-      "categoria": "Eletrônica",
-      "descricao": "Medições de altíssima precisão para corrente, tensão, resistência e continuidade elétrica."
-    },
-    {
-      "nome": "Balança de Precisão",
-      "foto": "https://images.unsplash.com/photo-1603123853880-a92fafb7809f?auto=format&fit=crop&w=500&q=80",
-      "manual": "https://drive.google.com",
-      "agenda": "https://docs.google.com/spreadsheets",
-      "responsavel": "Fernanda",
-      "status": "Disponível",
-      "categoria": "Ferramentas",
-      "descricao": "Pesagem de resinas e conferência de peso final de filamentos consumidos em projetos."
-    }
-  ]
+  {
+    "nome": "PCB Router - Fresadora de PCI",
+    "foto": "https://images.unsplash.com/photo-1608962714006-2510936ebd01?auto=format&fit=crop&w=500&q=80",
+    "manual": "https://drive.google.com",
+    "agenda": "https://docs.google.com/spreadsheets",
+    "status": "Disponível",
+    "categoria": "Fabricação",
+    "descricao": "Fresadora de alta precisão para isolamento de trilhas em placas de circuito impresso protótipos.",
+    "video": "https://www.youtube.com/watch?v=yJR0RPVEo64",
+    "regras": [
+      "Utilizar apenas o computador dedicado ao fatiamento.",
+      "Registrar consumo de filamentos no formulário físico ao lado da máquina.",
+      "Aguardar a mesa esfriar antes de remover a peça.",
+      "Comunicar falhas ou entupimentos imediatamente à Kiara."
+    ]
+  },
+  {
+    "nome": "Router CNC 1",
+    "foto": "https://images.unsplash.com/photo-1615840287214-7fe58a8f3685?auto=format&fit=crop&w=500&q=80",
+    "manual": "https://drive.google.com",
+    "agenda": "https://docs.google.com/spreadsheets",
+    "status": "Disponível",
+    "categoria": "Fabricação",
+    "descricao": "Corte e usinagem de chapas de madeira, acrílico e metais moles de grande porte.",
+    "video": "https://www.youtube.com/watch?v=EXEMPLO1",
+    "regras": [
+      "Utilizar apenas o computador dedicado ao fatiamento.",
+      "Registrar consumo de filamentos no formulário físico ao lado da máquina.",
+      "Aguardar a mesa esfriar antes de remover a peça.",
+      "Comunicar falhas ou entupimentos imediatamente à Kiara."
+    ]
+  },
+  {
+    "nome": "Router CNC 2",
+    "foto": "https://images.unsplash.com/photo-1615840287214-7fe58a8f3685?auto=format&fit=crop&w=500&q=80",
+    "manual": "https://drive.google.com",
+    "agenda": "https://docs.google.com/spreadsheets",
+    "status": "Em manutenção",
+    "categoria": "Fabricação",
+    "descricao": "Equipamento secundário de usinagem cnc para projetos acadêmicos rápidos.",
+    "video": "https://www.youtube.com/watch?v=EXEMPLO1",
+    "regras": [
+      "Utilizar apenas o computador dedicado ao fatiamento.",
+      "Registrar consumo de filamentos no formulário físico ao lado da máquina.",
+      "Aguardar a mesa esfriar antes de remover a peça.",
+      "Comunicar falhas ou entupimentos imediatamente à Kiara."
+    ]
+  },
+  {
+    "nome": "Câmera 360",
+    "foto": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=500&q=80",
+    "manual": "https://drive.google.com",
+    "agenda": "https://docs.google.com/spreadsheets",
+    "status": "Disponível",
+    "categoria": "Visual/Audiovisual",
+    "descricao": "Câmera de captura imersiva para mapeamento de ambientes virtuais e realidade aumentada.",
+    "video": "https://www.youtube.com/watch?v=EXEMPLO1",
+    "regras": [
+      "Utilizar apenas o computador dedicado ao fatiamento.",
+      "Registrar consumo de filamentos no formulário físico ao lado da máquina.",
+      "Aguardar a mesa esfriar antes de remover a peça.",
+      "Comunicar falhas ou entupimentos imediatamente à Kiara."
+    ]
+  },
+  {
+    "nome": "Micro Retífica",
+    "foto": "https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=500&q=80",
+    "manual": "https://drive.google.com",
+    "agenda": "https://docs.google.com/spreadsheets",
+    "status": "Disponível",
+    "categoria": "Ferramentas",
+    "descricao": "Ferramenta rotativa multifunção para acabamento de peças plásticas, cortes finos e polimentos.",
+    "video": "https://www.youtube.com/watch?v=EXEMPLO1",
+    "regras": [
+      "Utilizar apenas o computador dedicado ao fatiamento.",
+      "Registrar consumo de filamentos no formulário físico ao lado da máquina.",
+      "Aguardar a mesa esfriar antes de remover a peça.",
+      "Comunicar falhas ou entupimentos imediatamente à Kiara."
+    ]
+  },
+  {
+    "nome": "Plotter de Recorte",
+    "foto": "https://images.unsplash.com/photo-1619120238346-978e07731e77?auto=format&fit=crop&w=500&q=80",
+    "manual": "https://drive.google.com",
+    "agenda": "https://docs.google.com/spreadsheets",
+    "status": "Disponível",
+    "categoria": "Fabricação",
+    "descricao": "Corte preciso de vinil adesivo, máscaras de solda e papéis de alta gramatura.",
+    "video": "https://www.youtube.com/watch?v=EXEMPLO1",
+    "regras": [
+      "Utilizar apenas o computador dedicado ao fatiamento.",
+      "Registrar consumo de filamentos no formulário físico ao lado da máquina.",
+      "Aguardar a mesa esfriar antes de remover a peça.",
+      "Comunicar falhas ou entupimentos imediatamente à Kiara."
+    ]
+  },
+  {
+    "nome": "CNC H3N",
+    "foto": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=500&q=80",
+    "manual": "https://drive.google.com",
+    "agenda": "https://docs.google.com/spreadsheets",
+    "status": "Restrito",
+    "categoria": "Fabricação",
+    "descricao": "Usinagem industrial de precisão avançada. Exige treinamento presencial nível III.",
+    "video": "https://www.youtube.com/watch?v=EXEMPLO1",
+    "regras": [
+      "Utilizar apenas o computador dedicado ao fatiamento.",
+      "Registrar consumo de filamentos no formulário físico ao lado da máquina.",
+      "Aguardar a mesa esfriar antes de remover a peça.",
+      "Comunicar falhas ou entupimentos imediatamente à Kiara."
+    ]
+  },
+  {
+    "nome": "Scanner 3D",
+    "foto": "https://images.unsplash.com/photo-1535378917042-10a22c95931a?auto=format&fit=crop&w=500&q=80",
+    "manual": "https://drive.google.com",
+    "agenda": "https://docs.google.com/spreadsheets",
+    "status": "Disponível",
+    "categoria": "Visual/Audiovisual",
+    "descricao": "Digitalização tridimensional de objetos reais para posterior engenharia reversa.",
+    "video": "https://www.youtube.com/watch?v=EXEMPLO1",
+    "regras": [
+      "Utilizar apenas o computador dedicado ao fatiamento.",
+      "Registrar consumo de filamentos no formulário físico ao lado da máquina.",
+      "Aguardar a mesa esfriar antes de remover a peça.",
+      "Comunicar falhas ou entupimentos imediatamente à Kiara."
+    ]
+  },
+  {
+    "nome": "Termoformadora (Vacuum Forming)",
+    "foto": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=500&q=80",
+    "manual": "https://drive.google.com",
+    "agenda": "https://docs.google.com/spreadsheets",
+    "status": "Disponível",
+    "categoria": "Fabricação",
+    "descricao": "Moldagem de chapas plásticas aquecidas por sucção a vácuo sobre moldes rígidos.",
+    "video": "https://www.youtube.com/watch?v=EXEMPLO1",
+    "regras": [
+      "Utilizar apenas o computador dedicado ao fatiamento.",
+      "Registrar consumo de filamentos no formulário físico ao lado da máquina.",
+      "Aguardar a mesa esfriar antes de remover a peça.",
+      "Comunicar falhas ou entupimentos imediatamente à Kiara."
+    ]
+  },
+  {
+    "nome": "Impressora 3D Bambu Lab A1",
+    "foto": "https://images.unsplash.com/photo-1615840287214-7fe58a8f3685?auto=format&fit=crop&w=500&q=80",
+    "manual": "https://drive.google.com",
+    "agenda": "https://docs.google.com/spreadsheets",
+    "status": "Disponível",
+    "categoria": "Fabricação",
+    "descricao": "Impressora FDM de altíssima velocidade e sistema multimateriais (AMS lite).",
+    "video": "https://www.youtube.com/watch?v=EXEMPLO1",
+    "regras": [
+      "Utilizar apenas o computador dedicado ao fatiamento.",
+      "Registrar consumo de filamentos no formulário físico ao lado da máquina.",
+      "Aguardar a mesa esfriar antes de remover a peça.",
+      "Comunicar falhas ou entupimentos imediatamente à Kiara."
+    ]
+  },
+  {
+    "nome": "Osciloscópio Digital",
+    "foto": "https://images.unsplash.com/photo-1601524909162-be87252be298?auto=format&fit=crop&w=500&q=80",
+    "manual": "https://drive.google.com",
+    "agenda": "https://docs.google.com/spreadsheets",
+    "status": "Disponível",
+    "categoria": "Eletrônica",
+    "descricao": "Análise de sinais de ondas de frequência, diagnóstico e debug de circuitos lógicos.",
+    "video": "https://www.youtube.com/watch?v=EXEMPLO1",
+    "regras": [
+      "Utilizar apenas o computador dedicado ao fatiamento.",
+      "Registrar consumo de filamentos no formulário físico ao lado da máquina.",
+      "Aguardar a mesa esfriar antes de remover a peça.",
+      "Comunicar falhas ou entupimentos imediatamente à Kiara."
+    ]
+  },
+  {
+    "nome": "Multímetro de Bancada",
+    "foto": "https://images.unsplash.com/photo-1517420162339-f99ff93dfdf9?auto=format&fit=crop&w=500&q=80",
+    "manual": "https://drive.google.com",
+    "agenda": "https://docs.google.com/spreadsheets",
+    "status": "Disponível",
+    "categoria": "Eletrônica",
+    "descricao": "Medições de altíssima precisão para corrente, tensão, resistência e continuidade elétrica.",
+    "video": "https://www.youtube.com/watch?v=EXEMPLO1",
+    "regras": [
+      "Utilizar apenas o computador dedicado ao fatiamento.",
+      "Registrar consumo de filamentos no formulário físico ao lado da máquina.",
+      "Aguardar a mesa esfriar antes de remover a peça.",
+      "Comunicar falhas ou entupimentos imediatamente à Kiara."
+    ]
+  },
+  {
+    "nome": "Balança de Precisão",
+    "foto": "https://images.unsplash.com/photo-1603123853880-a92fafb7809f?auto=format&fit=crop&w=500&q=80",
+    "manual": "https://drive.google.com",
+    "agenda": "https://docs.google.com/spreadsheets",
+    "status": "Disponível",
+    "categoria": "Ferramentas",
+    "descricao": "Pesagem de resinas e conferência de peso final de filamentos consumidos em projetos.",
+    "video": "https://www.youtube.com/watch?v=EXEMPLO1",
+    "regras": [
+      "Utilizar apenas o computador dedicado ao fatiamento.",
+      "Registrar consumo de filamentos no formulário físico ao lado da máquina.",
+      "Aguardar a mesa esfriar antes de remover a peça.",
+      "Comunicar falhas ou entupimentos imediatamente à Kiara."
+    ]
+  }
+]

@@ -226,7 +226,6 @@ function renderizarTabelaAgendamentos(dados) {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td><strong>${eq.nome}</strong></td>
-            <td>${eq.responsavel}</td>
             <td><span class="status-badge ${normalizarStatus(eq.status)}"><span class="dot"></span> ${eq.status}</span></td>
             <td>
                 <a href="${eq.agenda}" target="_blank" class="btn btn-accent btn-small"><i class="fa-solid fa-calendar-check"></i> Agendar Uso</a>
@@ -243,7 +242,7 @@ function renderizarTabelaManuais(dados) {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td><strong>${eq.nome}</strong></td>
-            <td><span style="font-size:0.85rem; background:#EEE; padding:2px 8px; border-radius:3px;">${eq.categoria || 'Geral'}</span></td>
+
             <td>
                 <a href="${eq.manual}" target="_blank" style="color:var(--accent-color); font-weight:600; text-decoration:none;">
                     <i class="fa-solid fa-file-pdf"></i> Download Manual PDF
@@ -307,18 +306,42 @@ function configurarEventosFiltroEBusca() {
 function abrirModal(eq) {
     document.getElementById('modal-title').textContent = eq.nome;
     document.getElementById('modal-img').src = eq.foto;
-    document.getElementById('modal-description').textContent = eq.descricao || 'Sem descrição extendida cadastrada no JSON.';
-    document.getElementById('modal-responsible').textContent = eq.responsavel;
+    document.getElementById('modal-description').textContent = eq.descricao || 'Sem descrição cadastrada.';
     
     const badge = document.getElementById('modal-badge');
     badge.className = `status-badge ${normalizarStatus(eq.status)}`;
     badge.innerHTML = `<span class="dot"></span> ${eq.status}`;
     
-    document.getElementById('modal-btn-manual').href = eq.manual;
-    document.getElementById('modal-btn-agenda').href = eq.agenda;
+    // 1. Renderização Dinâmica das Regras Específicas
+    const listaRegras = document.getElementById('modal-rules-list');
+    listaRegras.innerHTML = ""; // Limpa regras anteriores
+    
+    if (eq.regras && eq.regras.length > 0) {
+        eq.regras.forEach(regra => {
+            const li = document.createElement('li');
+            li.innerHTML = `<i class="fa-solid fa-check text-success"></i> ${regra}`;
+            listaRegras.appendChild(li);
+        });
+    } else {
+        // Regra padrão caso esqueçam de preencher o JSON para algum item
+        listaRegras.innerHTML = `<li><i class="fa-solid fa-check text-success"></i> Seguir as instruções gerais e zelar pelo equipamento.</li>`;
+    }
+    
+    // 2. Links dos Botões de Ação Fixos
+    document.getElementById('modal-btn-manual').href = eq.manual || "#";
+    document.getElementById('modal-btn-agenda').href = eq.agenda || "#";
+    
+    // 3. Controle Inteligente do Botão do YouTube Video
+    const btnVideo = document.getElementById('modal-btn-video');
+    if (eq.video && eq.video.trim() !== "") {
+        btnVideo.href = eq.video;
+        btnVideo.style.display = "inline-flex"; // Exibe o botão se houver link
+    } else {
+        btnVideo.style.display = "none"; // Oculta o botão se estiver vazio
+    }
     
     containers.modal.classList.add('active');
-    document.body.style.overflow = 'hidden'; // Trava o scroll do fundo
+    document.body.style.overflow = 'hidden';
 }
 
 function configurarModalFechamento() {
