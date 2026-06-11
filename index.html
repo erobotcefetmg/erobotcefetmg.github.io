@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Robot - CEFET-MG | Laboratório Maker</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo-area">
+                <div class="logo-placeholder">E-R</div>
+                <span class="brand-name">E-Robot <small>CEFET-MG</small></span>
+            </div>
+            <button class="menu-toggle" id="mobile-menu" aria-label="Abrir Menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+            <nav class="nav-menu">
+                <a href="#inicio" class="nav-link active">Início</a>
+                <a href="#equipamentos" class="nav-link">Equipamentos</a>
+                <a href="#agendamentos" class="nav-link">Agendamentos</a>
+                <a href="#manuais" class="nav-link">Manuais</a>
+                <a href="#documentos" class="nav-link">Documentos</a>
+            </nav>
+        </div>
+    </header>
+
+    <section id="inicio" class="hero-section">
+        <div class="hero-content">
+            <h1>E-Robot</h1>
+            <h2>Laboratório de Robótica e Fabricação Digital</h2>
+            <p>Espaço de inovação, prototipagem e aprendizado prático inspirado na cultura Maker e FabLabs.</p>
+            <a href="#equipamentos" class="btn btn-primary btn-large">Consultar Equipamentos</a>
+        </div>
+        
+        <div class="dashboard-counters">
+            <div class="counter-card">
+                <i class="fa-solid fa-screwdriver-wrench"></i>
+                <h3 id="count-total">13</h3>
+                <p>Equipamentos Totais</p>
+            </div>
+            <div class="counter-card">
+                <i class="fa-solid fa-circle-check"></i>
+                <h3 id="count-disponiveis">--</h3>
+                <p>Disponíveis Agora</p>
+            </div>
+            <div class="counter-card">
+                <i class="fa-solid fa-diagram-project"></i>
+                <h3>32+</h3>
+                <p>Projetos Realizados</p>
+            </div>
+            <div class="counter-card">
+                <i class="fa-solid fa-users"></i>
+                <h3>150+</h3>
+                <p>Usuários Credenciados</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="equipamentos" class="section-container">
+        <div class="section-header">
+            <h2>Nossos Equipamentos</h2>
+            <p>Explore a infraestrutura tecnológica disponível para desenvolvimento de projetos.</p>
+        </div>
+
+        <div class="search-filter-bar">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="search-input" placeholder="Buscar por nome, responsável ou categoria...">
+            </div>
+            <div class="filter-box">
+                <button class="filter-btn active" data-category="todos">Todos</button>
+                <button class="filter-btn" data-category="Fabricação">Fabricação</button>
+                <button class="filter-btn" data-category="Eletrônica">Eletrônica</button>
+                <button class="filter-btn" data-category="Visual/Audiovisual">Audiovisual</button>
+                <button class="filter-btn" data-category="Ferramentas">Ferramentas</button>
+            </div>
+        </div>
+
+        <div class="equipamentos-grid" id="equipamentos-container">
+            </div>
+    </section>
+
+    <section id="agendamentos" class="section-container bg-light">
+        <div class="section-header">
+            <h2>Agendamento de Uso e Empréstimos</h2>
+            <p>Consulte a disponibilidade em tempo real e reserve seu horário de uso nas planilhas oficiais.</p>
+        </div>
+        
+        <div class="agendamentos-layout">
+            <div class="legenda-container">
+                <h4>Legenda de Status:</h4>
+                <div class="legenda-itens">
+                    <span class="status-badge disponivel"><span class="dot"></span> Livre / Disponível</span>
+                    <span class="status-badge restrito"><span class="dot"></span> Reservado / Restrito</span>
+                    <span class="status-badge manutencao"><span class="dot"></span> Manutenção</span>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Equipamento</th>
+                            <th>Responsável</th>
+                            <th>Status Atual</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="agendamentos-table-body">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section id="manuais" class="section-container">
+        <div class="section-header">
+            <h2>Manuais de Utilização</h2>
+            <p>Documentação técnica e instruções passo a passo para operação segura das máquinas.</p>
+        </div>
+
+        <div class="search-box table-search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="manual-search" placeholder="Filtrar manuais por nome do equipamento...">
+        </div>
+
+        <div class="table-responsive">
+            <table class="custom-table" id="manuais-table">
+                <thead>
+                    <tr>
+                        <th>Equipamento</th>
+                        <th>Categoria</th>
+                        <th>Documento Técnico</th>
+                    </tr>
+                </thead>
+                <tbody id="manuais-table-body">
+                    </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section id="documentos" class="section-container bg-light">
+        <div class="section-header">
+            <h2>Documentação do Laboratório</h2>
+            <p>Acesse diretrizes institucionais, termos de compromisso e formulários de credenciamento.</p>
+        </div>
+
+        <div class="docs-grid">
+            <div class="doc-card">
+                <div class="doc-icon"><i class="fa-solid fa-gavel"></i></div>
+                <h3>Regulamento Interno</h3>
+                <p>Normas gerais de convivência, direitos e deveres dentro do espaço E-Robot.</p>
+                <a href="https://drive.google.com" target="_blank" class="btn btn-secondary">Acessar PDF</a>
+            </div>
+            <div class="doc-card">
+                <div class="doc-icon"><i class="fa-solid fa-handshake"></i></div>
+                <h3>Política de Empréstimos</h3>
+                <p>Regras para retirada de componentes, ferramentas e kits de desenvolvimento.</p>
+                <a href="https://drive.google.com" target="_blank" class="btn btn-secondary">Acessar PDF</a>
+            </div>
+            <div class="doc-card">
+                <div class="doc-icon"><i class="fa-solid fa-id-card"></i></div>
+                <h3>Formulário de Credenciamento</h3>
+                <p>Solicite sua liberação de acesso permanente e uso autônomo do laboratório.</p>
+                <a href="https://drive.google.com" target="_blank" class="btn btn-secondary">Preencher Form</a>
+            </div>
+            <div class="doc-card">
+                <div class="doc-icon"><i class="fa-solid fa-book-open"></i></div>
+                <h3>Tutoriais Gerais</h3>
+                <p>Acervo de pequenos guias rápidos criados pela equipe de bolsistas do laboratório.</p>
+                <a href="https://drive.google.com" target="_blank" class="btn btn-secondary">Ver Pasta</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal-overlay" id="equipamento-modal">
+        <div class="modal-card">
+            <button class="modal-close" id="close-modal">&times;</button>
+            <div class="modal-body">
+                <div class="modal-img-container">
+                    <img id="modal-img" src="" alt="Equipamento">
+                </div>
+                <div class="modal-info">
+                    <h2 id="modal-title">Nome do Equipamento</h2>
+                    <span id="modal-badge" class="status-badge">Disponível</span>
+                    
+                    <p class="modal-desc" id="modal-description">Descrição longa aqui...</p>
+                    
+                    <div class="modal-meta">
+                        <p><strong><i class="fa-solid fa-user"></i> Responsável pelo Treinamento:</strong> <span id="modal-responsible">Nome</span></p>
+                    </div>
+
+                    <div class="modal-rules">
+                        <h4><i class="fa-solid fa-triangle-exclamation"></i> Regras Principais de Uso:</h4>
+                        <ul>
+                            <li><i class="fa-solid fa-check text-success"></i> Utilizar apenas o computador dedicado ao equipamento.</li>
+                            <li><i class="fa-solid fa-check text-success"></i> Salvar todos os arquivos na pasta identificada do seu projeto.</li>
+                            <li><i class="fa-solid fa-check text-success"></i> Registrar o consumo de filamentos/insumos no formulário ao lado da máquina.</li>
+                            <li><i class="fa-solid fa-check text-success"></i> Comunicar imediatamente qualquer falha, quebra ou comportamento anômalo.</li>
+                        </ul>
+                    </div>
+
+                    <div class="modal-actions">
+                        <a id="modal-btn-manual" href="#" target="_blank" class="btn btn-primary"><i class="fa-solid fa-file-pdf"></i> Abrir Manual PDF</a>
+                        <a id="modal-btn-agenda" href="#" target="_blank" class="btn btn-accent"><i class="fa-solid fa-calendar-days"></i> Abrir Agenda</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 E-Robot - CEFET-MG. Todos os direitos reservados.</p>
+        <p><small>Desenvolvido com HTML5, CSS3 e Vanilla JavaScript puro.</small></p>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
