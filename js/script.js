@@ -1,8 +1,10 @@
+const URL_PLANILHA_EQUIPAMENTOS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQhevJwrwinHGkeCOyjkTCn6FZ0p9uES4rsgOk9hjFcJvURhw_Hpry4WcHibQibZlGh0SYB3ZxuxtSr/pub?gid=0&single=true&output=csv";
+
 // Banco de dados local para contingência caso o fetch falhe (Prevenção de Erros de CORS local)
 const BACKUP_EQUIPAMENTOS = [
     {
         "nome": "PCB Router - Fresadora de PCI",
-        "foto": "https://images.unsplash.com/photo-1608962714006-2510936ebd01?auto=format&fit=crop&w=500&q=80",
+        "foto": "https://images.unsplash.com/photo-1535378917042-10a22c95931a?auto=format&fit=crop&w=500&q=80",
         "manual": "https://drive.google.com",
         "agenda": "https://docs.google.com/spreadsheets",
         "responsavel": "Prof. Carlos",
@@ -12,7 +14,7 @@ const BACKUP_EQUIPAMENTOS = [
     },
     {
         "nome": "Router CNC 1",
-        "foto": "https://images.unsplash.com/photo-1615840287214-7fe58a8f3685?auto=format&fit=crop&w=500&q=80",
+        "foto": "https://images.unsplash.com/photo-1535378917042-10a22c95931a?auto=format&fit=crop&w=500&q=80",
         "manual": "https://drive.google.com",
         "agenda": "https://docs.google.com/spreadsheets",
         "responsavel": "Marcos Silva",
@@ -22,7 +24,7 @@ const BACKUP_EQUIPAMENTOS = [
     },
     {
         "nome": "Router CNC 2",
-        "foto": "https://images.unsplash.com/photo-1615840287214-7fe58a8f3685?auto=format&fit=crop&w=500&q=80",
+        "foto": "https://images.unsplash.com/photo-1535378917042-10a22c95931a?auto=format&fit=crop&w=500&q=80",
         "manual": "https://drive.google.com",
         "agenda": "https://docs.google.com/spreadsheets",
         "responsavel": "Marcos Silva",
@@ -136,6 +138,7 @@ let listaEquipamentos = [];
 let filtroCategoriaAtual = 'todos';
 
 // Elementos do DOM
+// =========================================================================
 const containers = {
     cards: document.getElementById('equipamentos-container'),
     agendamentos: document.getElementById('agendamentos-table-body'),
@@ -151,6 +154,7 @@ const containers = {
 };
 
 // Inicialização da Aplicação
+// =========================================================================
 document.addEventListener("DOMContentLoaded", () => {
     carregarDados();
     configurarMenuResponsivo();
@@ -159,19 +163,80 @@ document.addEventListener("DOMContentLoaded", () => {
     configurarScrollEActiveNav();
 });
 
-// Busca dados de `data/equipamentos.json`
+// Busca de Dados Integrada ao Google Sheets
+// =========================================================================
 async function carregarDados() {
     try {
-        const response = await fetch('data/equipamentos.json');
-        if (!response.ok) throw new Error('Não foi possível obter dados do JSON externo.');
-        listaEquipamentos = await response.json();
+        // Mudamos o '?' para '&' antes do v=${Date.now()} para não quebrar a URL do Google
+        const response = await fetch(`${URL_PLANILHA_EQUIPAMENTOS}&v=${Date.now()}`);
+        
+        if (!response.ok) throw new Error(`Status do servidor: ${response.status} ${response.statusText}`);
+        
+        const textoCSV = await response.text();
+        listaEquipamentos = parsearCSVParaEquipamentos(textoCSV);
+        console.log("Dados carregados do Sheets com sucesso!", listaEquipamentos);
     } catch (error) {
+        console.error("ERRO DETALHADO DO FETCH:", error); 
         console.warn("Utilizando array local (Fallback):", error.message);
         listaEquipamentos = BACKUP_EQUIPAMENTOS;
     }
     
     renderizarInterface(listaEquipamentos);
     atualizarContadores();
+}
+
+// Interpretador robusto caractere por caractere para evitar quebras por vírgulas internas
+function parsearCSVParaEquipamentos(textoCSV) {
+    const linhas = textoCSV.split(/\r?\n/);
+    if (linhas.length === 0) return [];
+
+    // Captura a primeira linha para mapear as chaves (id, nome, status...)
+    const cabecalhos = linhas[0].split(',').map(c => c.trim());
+    const resultado = [];
+
+    for (let i = 1; i < linhas.length; i++) {
+        const linhaAtual = linhas[i];
+        if (!linhaAtual.trim()) continue; // Salta linhas vazias
+
+        const colunas = [];
+        let colunaAtual = "";
+        let dentroDeAspas = false;
+
+        // Varre a linha letra por letra para respeitar blocos de texto protegidos por ""
+        for (let j = 0; j < linhaAtual.length; j++) {
+            const caractere = linhaAtual[j];
+
+            if (caractere === '"') {
+                dentroDeAspas = !dentroDeAspas; // Alterna o estado ao entrar/sair de aspas
+            } else if (caractere === ',' && !dentroDeAspas) {
+                // Encontrou uma vírgula divisória fora de aspas: fecha a coluna atual
+                colunas.push(colunaAtual.trim());
+                colunaAtual = "";
+            } else {
+                // Acumula o caractere na coluna em construção
+                colunaAtual += caractere;
+            }
+        }
+        // Adiciona a última coluna da linha
+        colunas.push(colunaAtual.trim());
+
+        const equipamento = {};
+
+        // Mapeia os valores encontrados para os seus respetivos cabeçalhos
+        cabecalhos.forEach((cabecalho, index) => {
+            let valorCelula = colunas[index] !== undefined ? colunas[index] : "";
+
+            // Trata especificamente a coluna de regras para voltar a ser um Array []
+            if (cabecalho === "regras") {
+                equipamento[cabecalho] = valorCelula ? valorCelula.split(';').map(r => r.trim()) : [];
+            } else {
+                equipamento[cabecalho] = valorCelula;
+            }
+        });
+
+        resultado.push(equipamento);
+    }
+    return resultado;
 }
 
 function renderizarInterface(dados) {
@@ -181,20 +246,21 @@ function renderizarInterface(dados) {
 }
 
 // 1. Renderização dos Cards (Módulo Equipamentos)
+// =========================================================================
 function renderizarCards(dados) {
     containers.cards.innerHTML = "";
-    if(dados.length === 0) {
+    if (dados.length === 0) {
         containers.cards.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color: var(--text-muted);">Nenhum equipamento correspondente encontrado.</p>`;
         return;
     }
 
-    dados.forEach((eq, index) => {
+    dados.forEach((eq) => {
         const statusClass = normalizarStatus(eq.status);
         const card = document.createElement('div');
         card.className = 'equip-card';
         card.innerHTML = `
             <div class="equip-img-wrapper">
-                <img src="${eq.foto}" alt="${eq.nome}" onerror="this.src='https://via.placeholder.com/400x250?text=E-Robot'">
+                <img src="${eq.foto}" alt="${eq.nome}" onerror="this.src=''">
                 <span class="status-tag ${statusClass}">${eq.status}</span>
             </div>
             <div class="equip-content">
@@ -209,17 +275,18 @@ function renderizarCards(dados) {
         containers.cards.appendChild(card);
     });
 
-    // Eventos nos botões recém-criados de "Ver Detalhes"
+    // Eventos nos botões dinâmicos de "Ver Detalhes"
     document.querySelectorAll('.btn-detalhes').forEach(botao => {
         botao.addEventListener('click', (e) => {
             const nomeEq = e.currentTarget.getAttribute('data-idx');
             const eqSelecionado = listaEquipamentos.find(item => item.nome === nomeEq);
-            abrirModal(eqSelecionado);
+            if (eqSelecionado) abrirModal(eqSelecionado);
         });
     });
 }
 
 // 2. Renderização de Tabelas de Agendamento
+// =========================================================================
 function renderizarTabelaAgendamentos(dados) {
     containers.agendamentos.innerHTML = "";
     dados.forEach(eq => {
@@ -236,13 +303,13 @@ function renderizarTabelaAgendamentos(dados) {
 }
 
 // 3. Renderização da Tabela de Manuais
+// =========================================================================
 function renderizarTabelaManuais(dados) {
     containers.manuais.innerHTML = "";
     dados.forEach(eq => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td><strong>${eq.nome}</strong></td>
-
             <td>
                 <a href="${eq.manual}" target="_blank" style="color:var(--accent-color); font-weight:600; text-decoration:none;">
                     <i class="fa-solid fa-file-pdf"></i> Download Manual
@@ -254,16 +321,18 @@ function renderizarTabelaManuais(dados) {
 }
 
 // Gerenciador de Filtros e Busca Textual Combinada
+// =========================================================================
 function aplicarFiltros() {
     const termoBusca = containers.searchMain.value.toLowerCase().trim();
     
     const dadosFiltrados = listaEquipamentos.filter(eq => {
         const correspondeCategoria = (filtroCategoriaAtual === 'todos' || eq.categoria === filtroCategoriaAtual);
         
+        // Busca textual inteligente varrendo Nome, Categoria e Descrição (Sem coluna responsável)
         const correspondeTexto = (
-            eq.nome.toLowerCase().includes(termoBusca) || 
-            eq.responsavel.toLowerCase().includes(termoBusca) ||
-            (eq.categoria && eq.categoria.toLowerCase().includes(termoBusca))
+            (eq.nome && eq.nome.toLowerCase().includes(termoBusca)) || 
+            (eq.categoria && eq.categoria.toLowerCase().includes(termoBusca)) ||
+            (eq.descricao && eq.descricao.toLowerCase().includes(termoBusca))
         );
         
         return correspondeCategoria && correspondeTexto;
@@ -276,7 +345,7 @@ function configurarEventosFiltroEBusca() {
     // Busca na barra principal
     containers.searchMain.addEventListener('input', aplicarFiltros);
 
-    // Botões de categorias
+    // Botões seletores de categorias
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -286,23 +355,20 @@ function configurarEventosFiltroEBusca() {
         });
     });
 
-    // Busca rápida da tabela de manuais separada
+    // Busca rápida específica da tabela de manuais
     containers.searchManuais.addEventListener('input', (e) => {
         const termo = e.target.value.toLowerCase();
         const linhas = containers.manuais.querySelectorAll('tr');
         
         linhas.forEach(linha => {
             const nomeEq = linha.cells[0].textContent.toLowerCase();
-            if(nomeEq.includes(termo)) {
-                linha.style.display = "";
-            } else {
-                linha.style.display = "none";
-            }
+            linha.style.display = nomeEq.includes(termo) ? "" : "none";
         });
     });
 }
 
 // Lógica de Controle do Modal Dinâmico
+// =========================================================================
 function abrirModal(eq) {
     document.getElementById('modal-title').textContent = eq.nome;
     document.getElementById('modal-img').src = eq.foto;
@@ -312,9 +378,9 @@ function abrirModal(eq) {
     badge.className = `status-badge ${normalizarStatus(eq.status)}`;
     badge.innerHTML = `<span class="dot"></span> ${eq.status}`;
     
-    // 1. Renderização Dinâmica das Regras Específicas
+    // Renderização Dinâmica das Regras de Uso Específicas
     const listaRegras = document.getElementById('modal-rules-list');
-    listaRegras.innerHTML = ""; // Limpa regras anteriores
+    listaRegras.innerHTML = ""; 
     
     if (eq.regras && eq.regras.length > 0) {
         eq.regras.forEach(regra => {
@@ -323,21 +389,20 @@ function abrirModal(eq) {
             listaRegras.appendChild(li);
         });
     } else {
-        // Regra padrão caso esqueçam de preencher o JSON para algum item
         listaRegras.innerHTML = `<li><i class="fa-solid fa-check text-success"></i> Seguir as instruções gerais e zelar pelo equipamento.</li>`;
     }
     
-    // 2. Links dos Botões de Ação Fixos
+    // Links dos botões de ação fixa do Modal
     document.getElementById('modal-btn-manual').href = eq.manual || "#";
     document.getElementById('modal-btn-agenda').href = eq.agenda || "#";
     
-    // 3. Controle Inteligente do Botão do YouTube Video
+    // Controle Inteligente de Exibição do Vídeo do YouTube
     const btnVideo = document.getElementById('modal-btn-video');
     if (eq.video && eq.video.trim() !== "") {
         btnVideo.href = eq.video;
-        btnVideo.style.display = "inline-flex"; // Exibe o botão se houver link
+        btnVideo.style.display = "inline-flex"; 
     } else {
-        btnVideo.style.display = "none"; // Oculta o botão se estiver vazio
+        btnVideo.style.display = "none"; 
     }
     
     containers.modal.classList.add('active');
@@ -347,7 +412,7 @@ function abrirModal(eq) {
 function configurarModalFechamento() {
     containers.closeModal.addEventListener('click', fecharModal);
     containers.modal.addEventListener('click', (e) => {
-        if(e.target === containers.modal) fecharModal();
+        if (e.target === containers.modal) fecharModal();
     });
 }
 
@@ -356,14 +421,14 @@ function fecharModal() {
     document.body.style.overflow = '';
 }
 
-// Menu sanduíche responsivo
+// Menu Sanduíche Responsivo (Mobile)
+// =========================================================================
 function configurarMenuResponsivo() {
     containers.mobileMenu.addEventListener('click', () => {
         containers.mobileMenu.classList.toggle('active');
         containers.navMenu.classList.toggle('active');
     });
 
-    // Fecha menu ao clicar em qualquer item
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', () => {
             containers.mobileMenu.classList.remove('active');
@@ -372,14 +437,16 @@ function configurarMenuResponsivo() {
     });
 }
 
-// Atualiza os contadores estáticos e dinâmicos baseados no JSON
+// Gerenciador de Indicadores Metas/Contadores
+// =========================================================================
 function atualizarContadores() {
     containers.countTotal.textContent = listaEquipamentos.length;
     const disponiveis = listaEquipamentos.filter(e => e.status === 'Disponível').length;
     containers.countDisp.textContent = disponiveis;
 }
 
-// Realce e Monitoramento de links ativos no cabeçalho
+// Monitoramento de Scroll para Link Ativo no Cabeçalho
+// =========================================================================
 function configurarScrollEActiveNav() {
     const links = document.querySelectorAll('.nav-link');
     const secoes = document.querySelectorAll('section');
@@ -388,7 +455,6 @@ function configurarScrollEActiveNav() {
         let atual = "";
         secoes.forEach(secao => {
             const top = secao.offsetTop;
-            const height = secao.clientHeight;
             if (window.scrollY >= (top - 150)) {
                 atual = secao.getAttribute('id');
             }
@@ -403,11 +469,12 @@ function configurarScrollEActiveNav() {
     });
 }
 
-// Conversor auxiliar para classes CSS padronizadas
+// Normalizador Auxiliar de Classes CSS baseado no Status
+// =========================================================================
 function normalizarStatus(status) {
-    if(!status) return 'disponivel';
+    if (!status) return 'disponivel';
     const s = status.toLowerCase();
-    if(s.includes('manuten')) return 'manutencao';
-    if(s.includes('restrit')) return 'restrito';
+    if (s.includes('manuten')) return 'manutencao';
+    if (s.includes('restrit')) return 'restrito';
     return 'disponivel';
 }
